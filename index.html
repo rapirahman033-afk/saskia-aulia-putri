@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Ulang Tahun Spesial Saskia</title>
+    <!-- Library Confetti untuk efek kembang api kertas -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #060508 0%, #5043fa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2, h1 {
+            color: #6e1fc9;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #461db8;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #100480;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background: #188ae8;
+            transform: scale(1.02);
+        }
+
+        .error-msg {
+            color: #400db8;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* --- PENGATURAN TAMPILAN HALAMAN (VISIBLE / HIDDEN) --- */
+        .hidden {
+            display: none !important;
+        }
+
+        .visible {
+            display: block !important;
+        }
+
+        /* Menu Navigasi Tab */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #a8adc0;
+            padding-bottom: 15px;
+        }
+
+        .nav-btn {
+            background: #838386;
+            color: #57606f;
+            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.active-tab {
+            background: #5347ff;
+            color: white;
+        }
+
+        /* Konten Halaman Kartu */
+        .cake-container {
+            font-size: 65px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .message-box {
+            background: #fff5f5;
+            border: 2px dashed #ffb8b8;
+            padding: 15px;
+            border-radius: 12px;
+            color: #555;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .memory-card {
+            background: #f8f9fa;
+            border-left: 5px solid #5947ff;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: left;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .gift-box-area {
+            font-size: 70px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        #secret-gift-msg {
+            display: none;
+            background: #55d1e1;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: #747d8c;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .btn-logout:hover {
+            background: #2f3640;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= HALAMAN LOGIN ================= -->
+    <div class="container" id="login-page">
+        <h2>🎉 Portal Kejutan Spesial</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan nama dan password untuk masuk.</p>
+        <div class="input-group">
+            <label for="name">Nama Kamu:</label>
+            <input type="text" id="name" placeholder="Contoh: baddy">
+        </div>
+        <div class="input-group">
+            <label for="password">Password (Kode Rahasia):</label>
+            <input type="password" id="password" placeholder="Hint: 123">
+        </div>
+        <button onclick="checkLogin()" style="width: 100%;">Buka Portal 🚀</button>
+        <div class="error-msg" id="error">Nama dan pasword harus sesuai ya kia jika tdak dapat login maka belum waktunya mohon bersabar dan tunggu hingga 9 november 2026!!!</div>
+    </div>
+
+
+    <!-- ================= PORTAL UTAMA (MULTI-HALAMAN) ================= -->
+    <div class="container hidden" id="main-portal">
+        
+        <!-- MENU TOMBOL ATAS -->
+        <div class="nav-menu">
+            <button class="nav-btn active-tab" id="btn-home" onclick="switchTab('home')">🎂 Utama</button>
+            <button class="nav-btn" id="btn-memories" onclick="switchTab('memories')">💌 pesan</button>
+            <button class="nav-btn" id="btn-gift" onclick="switchTab('gift')">🎁 Kado</button>
+        </div>
+
+        <!-- TAB 1: HALAMAN UTAMA -->
+        <div id="tab-home" class="visible">
+            <div class="cake-container" onclick="triggerConfetti()">🎂</div>
+            <h1 id="greeting-title">Selamat Ulang Tahun, Saskia!</h1>
+            <div class="message-box">
+                <p>
+                    Happy Birthday Saskia! 🥳 Semoga di pertambahan usia ini, kamu selalu dilimpahi kesehatan, kebahagiaan yang melimpah, dan semua mimpi serta cita-citamu satu per satu bisa terwujud. Tetaplah jadi pribadi yang hebat dan menginspirasi ya terimakasih sudah bertahan dengan hebat hingga hari ini ingatlah bahwa dunia ini lebih bewarna karena kehadiranmu teruslah bersinar,dan jangan lupa untuk selalu berbaik hati pada dirimu sendiri! ✨
+                </p>
+            </div>
+            <button onclick="triggerConfetti()" style="width: 100%;">🎉 Ledakkan Confetti Lagi!</button>
+        </div>
+
+        <!-- TAB 2: HALAMAN KENANGAN -->
+        <div id="tab-memories" class="hidden">
+            <h2>Pesan untukmu ✨</h2>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">Beberapa hal kecil yang ingin disampaikan untukmu:</p>
+            
+            <div class="memory-card">
+                <b>🌟 Terima Kasih</b><br>tidaka apa apa jika sesekali kia merasa lelah dan ingin menangis menjadi orang baik dan rama bukan bearti kia harus selalu'baik baik saja'.kia juga manusia yang punya batas
+            </div>
+            <div class="memory-card">
+                <b>💪 Tetap Semangat</b><br>Apapun tantangan di depan, ingatlah bahwa kia jauh lebih kuat dari yang kia bayangkan.
+            </div>
+            <div class="memory-card">
+                <b>☕ Waktu Bahagia</b><br>semoga hari hari kia kedepan diisi dengan banyak momen tenang ,tawa,dan hal imdah lainnya,dan semoga kia tidak sering bersedih lagi!!
+            </div>
+            <div class="memory-card">
+                <b>selalu kuat ya</b><br>terimakasih karena selalu ada dan memperlakukan orang lain dengan lembut. tapi ingat , kalau suatu hari kamu butuh tempet untuk bersandar dan berkeluh kesah, aku akan ada untuk mendengar dan menenangkan mu
+            </div>
+        </div>
+
+        <!-- TAB 3: HALAMAN KADO -->
+        <div id="tab-gift" class="hidden">
+            <h2>Kado Kejutan 🎁</h2>
+            <p style="color: #666; font-size: 13px;">Klik kotak kado di bawah untuk membuka pesan rahasia terakhir!</p>
+            
+            <div class="gift-box-area" onclick="openGift()">
+                🎁
+            </div>
+            <div id="secret-gift-msg">
+                🎉 Selamat Saskia! Kamu berhak mendapatkan, senyuman tulus, kado, dan kue ulang tahun!! Tetap bahagia ya! 🥳  dan jangan lupa datang ke acara mu pada hari selasa 10 november 2026 sepulang sekolah
+            </div>
+        </div>
+
+        <!-- TOMBOL KELUAR -->
+        <button class="btn-logout" onclick="resetPage()">Keluar / Ganti Akun</button>
+    </div>
+
+    <script>
+        // Data login yang benar
+        const correctName = "saskia aulia putri";
+        const correctPassword = "310659";
+
+        function checkLogin() {
+            const nameInput = document.getElementById("name").value.trim().toLowerCase();
+            const passwordInput = document.getElementById("password").value.trim();
+            const errorMsg = document.getElementById("error");
+
+            // Validasi nama harus "saskia" dan password "123"
+            if (nameInput === correctName && passwordInput === correctPassword) {
+                // Sembunyikan halaman login
+                document.getElementById("login-page").classList.add("hidden");
+                // Tampilkan portal utama
+                document.getElementById("main-portal").classList.remove("hidden");
+                document.getElementById("main-portal").classList.add("visible");
+                
+                // Jalankan efek kembang api
+                startSurpriseConfetti();
+            } else {
+                errorMsg.style.display = "block";
+            }
+        }
+
+        // Fungsi perpindahan tab menu yang lebih bersih dan pasti jalan
+        function switchTab(tabName) {
+            // Sembunyikan semua tab isi
+            document.getElementById("tab-home").className = "hidden";
+            document.getElementById("tab-memories").className = "hidden";
+            document.getElementById("tab-gift").className = "hidden";
+
+            // Matikan semua warna aktif tombol menu
+            document.getElementById("btn-home").className = "nav-btn";
+            document.getElementById("btn-memories").className = "nav-btn";
+            document.getElementById("btn-gift").className = "nav-btn";
+
+            // Tampilkan tab yang dipilih dan aktifkan tombolnya
+            document.getElementById("tab-" + tabName).className = "visible";
+            document.getElementById("btn-" + tabName).className = "nav-btn active-tab";
+        }
+
+        function openGift() {
+            const giftMsg = document.getElementById("secret-gift-msg");
+            giftMsg.style.display = "block";
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function startSurpriseConfetti() {
+            var duration = 2.5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                var particleCount = 40 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function resetPage() {
+            // Bersihkan input login
+            document.getElementById("name").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("error").style.display = "none";
+            
+            // Sembunyikan portal utama, tampilkan kembali halaman login
+            document.getElementById("main-portal").className = "container hidden";
+            document.getElementById("login-page").className = "container visible";
+            
+            // Sembunyikan pesan rahasia kado
+            document.getElementById("secret-gift-msg").style.display = "none";
+            
+            // Kembalikan tab ke menu utama
+            switchTab('home');
+        }
+    </script>
+
+</body>
+</html>
